@@ -1,1 +1,6 @@
 *.egg-info/
+Pipfile.lock
+.pytest_cache
+build
+dist
+.vscode

@@ -199,3 +199,7 @@ def fcmatch(pat_str):
     for key, (ffi_key, extract,) in keys.items():
         extract(font, key, ffi_key, data, ptrs[extract])
     return Font(data)
+
+if __name__ == "__main__":
+    for font in fclist():
+        print(font.family, font.style, font.file)
