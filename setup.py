@@ -1,14 +1,14 @@
 import os
 from setuptools import setup
 
-description="Python cffi bridge to fontconfig's FcFontList/FcFontMatch",
+description="Python cffi bridge to fontconfig's FcFontList/FcFontMatch"
 if os.path.exists('README.md'):
     long_description = open('README.md').read()
 else:
     long_description = description
 
 setup(name='fclist',
-      version='1.1.1',
+      version='1.1.2',
       description=description,
       long_description=long_description,
       url='http://github.com/tarruda/python-fclist',
