@@ -146,7 +146,8 @@ class Font(object):
             if isinstance(value, bytes):
                 value = value.decode()
             setattr(self, key, value)
-        self.style = set(self.style.split())
+        if self.style is not None:
+            self.style = set(self.style.split())
 
     def __repr__(self):
         return 'family: {family}, style: {style}'.format(**self.__dict__)

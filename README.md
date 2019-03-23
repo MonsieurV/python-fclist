@@ -1,11 +1,11 @@
-###Python cffi bridge to fontconfig's FcFontList/FcFontMatch
+### Python cffi bridge to fontconfig's FcFontList/FcFontMatch
 
 Useful for python programs that need to query information about fonts installed
 in the system(use this instead of parsing fc-list output). Requires the
-fontconfig shared library installed in a directory that the cffi module can
+fontconfig shared library installed in a directory that the [cffi module] can
 find.
 
-###Usage
+### Usage
 
 ```python
 from fclist import fclist, fcmatch
@@ -24,3 +24,9 @@ fontconfig.h.
 
 `fcmatch` receives the same pattern that is normally passed to `fc-match`, but
 it doesn't support the --all/--sort options(only returns a single font object).
+
+### Tests
+Tests are written to use [pytest].
+
+[cffi module]: https://cffi.readthedocs.io/en/latest/
+[pytest]: https://docs.pytest.org
