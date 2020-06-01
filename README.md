@@ -1,9 +1,17 @@
 ### Python cffi bridge to fontconfig's FcFontList/FcFontMatch
 
+Note: this is [a plublished](https://pypi.org/project/fclist-cffi/) fork of tarruda [`python-fclist`](https://github.com/tarruda/python-fclist).
+
 Useful for python programs that need to query information about fonts installed
 in the system(use this instead of parsing fc-list output). Requires the
 fontconfig shared library installed in a directory that the [cffi module] can
 find.
+
+### Installing
+
+```sh
+pip install fclist-cffi
+```
 
 ### Usage
 
@@ -26,6 +34,7 @@ fontconfig.h.
 it doesn't support the --all/--sort options(only returns a single font object).
 
 ### Tests
+
 Tests are written to use [pytest].
 
 [cffi module]: https://cffi.readthedocs.io/en/latest/
