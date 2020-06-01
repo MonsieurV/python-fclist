@@ -12,3 +12,6 @@ install-package-in-venv:
 	pipenv run python setup.py install
 
 test-package-in-venv: install-package-in-venv test
+
+format:
+	pipenv run black .

@@ -2,10 +2,13 @@
 import cffi
 
 
-__all__ = ('fclist', 'fcmatch',)
+__all__ = (
+    "fclist",
+    "fcmatch",
+)
 
 
-API = '''
+API = """
 typedef enum {
     FcResultMatch, FcResultNoMatch, FcResultTypeMismatch, FcResultNoId,
     FcResultOutOfMemory
@@ -42,30 +45,30 @@ void FcPatternDestroy(void *pat);
 void FcObjectSetDestroy(void *os);
 void FcFontSetDestroy(void *fs);
 void free(void *ptr);
-'''
+"""
 
 
 ffi = cffi.FFI()
 ffi.cdef(API)
 
-fc = ffi.dlopen('fontconfig')
+fc = ffi.dlopen("fontconfig")
 keys = {}
 
 
 def get_bool(font, key, ffi_key, data, ptr):
-    ptr = ffi.new('int *')
+    ptr = ffi.new("int *")
     if fc.FcPatternGetBool(font, ffi_key, 0, ptr) == fc.FcResultMatch:
         data[key] = bool(ptr[0])
 
 
 def get_double(font, key, ffi_key, data, ptr):
-    ptr = ffi.new('double *')
+    ptr = ffi.new("double *")
     if fc.FcPatternGetDouble(font, ffi_key, 0, ptr) == fc.FcResultMatch:
         data[key] = ptr[0]
 
 
 def get_int(font, key, ffi_key, data, ptr):
-    ptr = ffi.new('int *')
+    ptr = ffi.new("int *")
     if fc.FcPatternGetInteger(font, ffi_key, 0, ptr) == fc.FcResultMatch:
         data[key] = ptr[0]
 
@@ -77,62 +80,74 @@ def get_string(font, key, ffi_key, data, ptr):
 
 def build_fc_key_table():
     bool_keys = [
-        'antialias',
-        'hinting',
-        'verticallayout',
-        'autohint',
-        'globaladvance',
-        'outline',
-        'scalable',
-        'minspace',
-        'embolden',
-        'embeddedbitmap',
-        'decorative',
+        "antialias",
+        "hinting",
+        "verticallayout",
+        "autohint",
+        "globaladvance",
+        "outline",
+        "scalable",
+        "minspace",
+        "embolden",
+        "embeddedbitmap",
+        "decorative",
     ]
 
     int_keys = [
-        'spacing',
-        'hintstyle',
-        'width',
-        'index',
-        'rgba',
-        'fontversion',
-        'lcdfilter',
+        "spacing",
+        "hintstyle",
+        "width",
+        "index",
+        "rgba",
+        "fontversion",
+        "lcdfilter",
     ]
 
     double_keys = [
-        'size',
-        'aspect',
-        'pixelsize',
-        'scale',
-        'dpi',
+        "size",
+        "aspect",
+        "pixelsize",
+        "scale",
+        "dpi",
     ]
 
     string_keys = [
-        'family',
-        'style',
-        'aspect',
-        'foundry',
-        'file',
-        'rasterizer',
-        'charset',
-        'lang',
-        'fullname',
-        'familylang',
-        'stylelang',
-        'fullnamelang',
-        'capability',
-        'fontformat',
+        "family",
+        "style",
+        "aspect",
+        "foundry",
+        "file",
+        "rasterizer",
+        "charset",
+        "lang",
+        "fullname",
+        "familylang",
+        "stylelang",
+        "fullnamelang",
+        "capability",
+        "fontformat",
     ]
 
     for key in bool_keys:
-        keys[key] = (ffi.new('char[]', str.encode(key)), get_bool,)
+        keys[key] = (
+            ffi.new("char[]", str.encode(key)),
+            get_bool,
+        )
     for key in int_keys:
-        keys[key] = (ffi.new('char[]', str.encode(key)), get_int,)
+        keys[key] = (
+            ffi.new("char[]", str.encode(key)),
+            get_int,
+        )
     for key in double_keys:
-        keys[key] = (ffi.new('char[]', str.encode(key)), get_double,)
+        keys[key] = (
+            ffi.new("char[]", str.encode(key)),
+            get_double,
+        )
     for key in string_keys:
-        keys[key] = (ffi.new('char[]', str.encode(key)), get_string,)
+        keys[key] = (
+            ffi.new("char[]", str.encode(key)),
+            get_string,
+        )
 
 
 build_fc_key_table()
@@ -150,7 +165,7 @@ class Font(object):
             self.style = set(self.style.split())
 
     def __repr__(self):
-        return 'family: {family}, style: {style}'.format(**self.__dict__)
+        return "family: {family}, style: {style}".format(**self.__dict__)
 
 
 def fclist(**query):
@@ -162,18 +177,18 @@ def fclist(**query):
     the fontconfig.h header.
     """
     config = ffi.gc(fc.FcInitLoadConfigAndFonts(), fc.FcConfigDestroy)
-    pat_str = ''.join([':{0}={1}'.format(k, v) for k, v in query.items()])
+    pat_str = "".join([":{0}={1}".format(k, v) for k, v in query.items()])
     pat = ffi.gc(fc.FcNameParse(str.encode(pat_str)), fc.FcPatternDestroy)
     pat_str = ffi.string(ffi.gc(fc.FcNameUnparse(pat), fc.free))
-    if pat_str == '' and len(query):
-        raise Exception('Invalid search query')
+    if pat_str == "" and len(query):
+        raise Exception("Invalid search query")
     os = ffi.gc(fc.FcObjectSetBuild(*osb_args), fc.FcObjectSetDestroy)
     fs = ffi.gc(fc.FcFontList(config, pat, os), fc.FcFontSetDestroy)
     ptrs = {
-        get_bool: ffi.new('int *'),
-        get_int: ffi.new('int *'),
-        get_double: ffi.new('double *'),
-        get_string: ffi.new('char **'),
+        get_bool: ffi.new("int *"),
+        get_int: ffi.new("int *"),
+        get_double: ffi.new("double *"),
+        get_string: ffi.new("char **"),
     }
     for i in range(fs.nfont):
         data = {}
@@ -188,18 +203,19 @@ def fcmatch(pat_str):
     pat = ffi.gc(fc.FcNameParse(str.encode(pat_str)), fc.FcPatternDestroy)
     fc.FcConfigSubstitute(config, pat, fc.FcMatchPattern)
     fc.FcDefaultSubstitute(pat)
-    res = ffi.new('FcResult *')
+    res = ffi.new("FcResult *")
     font = ffi.gc(fc.FcFontMatch(config, pat, res), fc.FcPatternDestroy)
     ptrs = {
-        get_bool: ffi.new('int *'),
-        get_int: ffi.new('int *'),
-        get_double: ffi.new('double *'),
-        get_string: ffi.new('char **'),
+        get_bool: ffi.new("int *"),
+        get_int: ffi.new("int *"),
+        get_double: ffi.new("double *"),
+        get_string: ffi.new("char **"),
     }
     data = {}
     for key, (ffi_key, extract,) in keys.items():
         extract(font, key, ffi_key, data, ptrs[extract])
     return Font(data)
+
 
 if __name__ == "__main__":
     for font in fclist():
