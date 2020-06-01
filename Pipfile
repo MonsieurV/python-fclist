@@ -9,6 +9,7 @@ cffi = "*"
 [dev-packages]
 pytest = "*"
 black = "*"
+twine = "*"
 
 [requires]
 python_version = "3"
